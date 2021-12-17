@@ -524,7 +524,7 @@ class Manager
         $isException = false;
         foreach ($this->exceptions as $exception) {
             if ($isException === false) {
-                if ($path === $exception || preg_match('/^'.preg_quote($exception,'/').'$/', $path) !== 0) {
+                if ($path === $exception || preg_match('/^'.$exception.'$/', $path) !== 0) {
                     $isException = true;
                 }
             }
