@@ -147,6 +147,6 @@ class Email extends \Expose\Notify
             </body>
         </html>";
 
-        return mail($toAddress, $subject, $body2, implode("\r\n", $headers));
+        return mail($toAddress, $subject, $body2, implode("\r\n", $headers));;
     }
 }
