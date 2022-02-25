@@ -97,9 +97,9 @@ class Email extends \Expose\Notify
             throw new \InvalidArgumentException('Invalid "from" email address');
         }
 
-        $loader = new \Twig_Loader_Filesystem(__DIR__.'/../Template');
-        $twig = new \Twig_Environment($loader);
-        $template = $twig->loadTemplate('Notify/Email.twig');
+        //$loader = new \Twig_Loader_Filesystem(__DIR__.'/../Template');
+        //$twig = new \Twig_Environment($loader);
+        //$template = $twig->loadTemplate('Notify/Email.twig');
 
         $headers = array(
             "From: ".$fromAddress,
@@ -119,12 +119,34 @@ class Email extends \Expose\Notify
         }
 
         $subject = 'Expose Notification - Impact Score '.$totalImpact;
-        $body = $template->render(array(
-            'impactData' => $impactData,
-            'runTime' => date('r'),
-            'totalImpact' => $totalImpact
-        ));
+        // $body = $template->render(array(
+        //     'impactData' => $impactData,
+        //     'runTime' => date('r'),
+        //     'totalImpact' => $totalImpact
+        // ));
 
-        return mail($toAddress, $subject, $body, implode("\r\n", $headers));
+        $date = date('r');
+        $body2 = "<html>
+        <body>
+            Expose executed at {$date} and found the following matches in the submitted data:
+            <br/><br/>
+            <table cellspacing='0' cellpadding='3' border='0'>
+            <tr><td><b>Impact</b></td><td><b>Description</b></td></tr>";
+        
+        foreach($impactData as $impact){
+            $body2 .= "<tr><td align='center'>$impact[impact]</td><td>
+            ($impact[description]) ($impact[id])</td></tr>
+            <tr><td>&nbsp;</td><td><b>Tags:</b>$impact[tags]</td></tr>
+            <tr><td>&nbsp;</td><td><b>Impact:</b>$impact[impact]</td></tr>
+            <tr><td colspan='2'>&nbsp;</td></tr>";
+        }
+        $body2 .= "</table>
+                <p>
+                    <b>Total Impact Score:</b> $totalImpact
+                </p>
+            </body>
+        </html>";
+
+        return mail($toAddress, $subject, $body2, implode("\r\n", $headers));
     }
 }
